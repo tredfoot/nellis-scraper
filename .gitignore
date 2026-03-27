@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Secrets – never commit these
+.env
+service-account-key.json
+
+# OS noise
+.DS_Store
+Thumbs.db
