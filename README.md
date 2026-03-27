@@ -1,19 +1,26 @@
-# Order Scraper
+# Nellis Auction Order Scraper
 
-Logs into a website, visits each order detail page, extracts fields, and appends rows to a Google Sheet.
+Logs into Nellis Auction, visits each order receipt page, extracts item details, and appends rows to a Google Sheet — one row per item.
 
 ---
 
-## Setup
+## Getting Started
 
-### 1. Install dependencies
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/tredfoot/nellis-scraper.git
+cd nellis-scraper
+```
+
+### 2. Install dependencies
 
 ```bash
 npm install
 npx playwright install chromium
 ```
 
-### 2. Set up your environment variables
+### 3. Set up your environment variables
 
 ```bash
 cp .env.example .env
@@ -32,11 +39,15 @@ Open **`.env`** and fill in your values:
 
 > `.env` and `service-account-key.json` are both in `.gitignore` — they will never be committed to git.
 
-### 3. Update CSS selectors in config.js
+### 4. Add your Google service account key
 
-Open **`config.js`** and update the `selectors` and `fields` sections to match your site. These are not secrets so they live in the config file directly.
+Download `service-account-key.json` from Google Cloud and place it in the project root. See **Google Sheets API Setup** below if you haven't done this yet.
 
-**Finding CSS selectors:** Open the site in Chrome, right-click the element you want → **Inspect** → right-click the highlighted HTML → **Copy → Copy selector**.
+### 5. Run it
+
+```bash
+node index.js
+```
 
 ---
 
@@ -50,34 +61,18 @@ Open **`config.js`** and update the `selectors` and `fields` sections to match y
 
 ---
 
-## Run
+## Configuration
 
-```bash
-node index.js
-```
+Open **`config.js`** to update CSS selectors if the site changes. These are not secrets so they live in the config file directly.
 
-To watch the browser while debugging, set `HEADLESS=false` in your `.env`.
-
----
-
-## Push to GitHub
-
-```bash
-git init
-git add .
-git commit -m "Initial commit: order scraper agent"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-git push -u origin main
-```
-
-`.env` and `service-account-key.json` are excluded by `.gitignore` automatically. Teammates clone the repo and run `cp .env.example .env` to get started.
+**Finding CSS selectors:** Open the site in Chrome, right-click the element you want → **Inspect** → right-click the highlighted HTML → **Copy → Copy selector**.
 
 ---
 
 ## Tips
 
-- **Login redirect fails?** Try replacing `waitForNavigation` with `page.waitForSelector('some-element-on-dashboard')` after clicking login.
-- **Orders use infinite scroll?** Add scroll logic before collecting `orderLinks` — ask Claude to add that if needed.
-- **Pagination?** Same — ask for a paginated version.
-- **Run on a schedule?** Use `cron` (Linux/Mac) or Task Scheduler (Windows), or deploy to a small VPS.
+- To watch the browser while debugging, set `HEADLESS=false` in your `.env`
+- **Login redirect fails?** Try replacing `waitForLoadState` with `page.waitForSelector('some-element-on-dashboard')` after clicking login
+- **Orders use infinite scroll?** Add scroll logic before collecting `orderLinks`
+- **Pagination?** Ask Claude to add a paginated version
+- **Run on a schedule?** Use `cron` (Linux/Mac) or Task Scheduler (Windows), or deploy to a small VPS
